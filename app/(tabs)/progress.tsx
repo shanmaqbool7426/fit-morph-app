@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GlassCard } from "@/components/GlassCard";
 import { ProgressRing } from "@/components/ProgressRing";
+import { TransformationCard } from "@/components/TransformationCard";
 import { useApp } from "@/context/AppContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -250,23 +251,9 @@ export default function ProgressScreen() {
           ))}
         </View>
 
-        {/* Photo Comparison Prompt */}
-        <Pressable
-          style={[styles.photoCTA, { backgroundColor: colors.surface, borderColor: colors.divider }]}
-        >
-          <LinearGradient
-            colors={["rgba(139,92,246,0.12)", "rgba(6,182,212,0.06)"]}
-            style={StyleSheet.absoluteFill}
-          />
-          <Ionicons name="camera-outline" size={28} color={colors.purple} />
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.photoTitle, { color: colors.text }]}>Transformation Photos</Text>
-            <Text style={[styles.photoSub, { color: colors.mutedForeground }]}>
-              Upload weekly progress photos for AI comparison
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={18} color={colors.mutedForeground} />
-        </Pressable>
+        {/* Transformation Comparison */}
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Body Transformation</Text>
+        <TransformationCard />
       </ScrollView>
     </View>
   );
