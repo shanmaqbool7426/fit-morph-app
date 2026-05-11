@@ -19,23 +19,12 @@ import { GlassCard } from "@/components/GlassCard";
 import { StatCard } from "@/components/StatCard";
 import { WorkoutCard } from "@/components/WorkoutCard";
 import { useApp } from "@/context/AppContext";
+import { WORKOUTS } from "@/constants/workouts";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 
-const TODAY_WORKOUT = {
-  name: "Upper Body Power",
-  category: "Strength",
-  duration: 45,
-  calories: 320,
-  level: "Intermediate",
-  exercises: [
-    { name: "Push-ups", sets: 4, reps: 15 },
-    { name: "Dumbbell Rows", sets: 4, reps: 12 },
-    { name: "Shoulder Press", sets: 3, reps: 10 },
-    { name: "Bicep Curls", sets: 3, reps: 12 },
-  ],
-};
+const TODAY_WORKOUT = WORKOUTS[0];
 
 const QUICK_ACTIONS = [
   { icon: "scan-outline" as const, label: "Body\nScan", color: "#22D3EE", route: "/onboarding/analyzing" },
@@ -248,7 +237,7 @@ export default function DashboardScreen() {
           <WorkoutCard
             {...TODAY_WORKOUT}
             accentColor={colors.purple}
-            onStart={() => router.push("/(tabs)/workout")}
+            onStart={() => router.push({ pathname: "/workout-timer", params: { id: TODAY_WORKOUT.id } })}
           />
 
           {/* Macro Breakdown */}

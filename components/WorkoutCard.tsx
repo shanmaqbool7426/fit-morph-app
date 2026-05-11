@@ -1,5 +1,6 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
@@ -14,6 +15,7 @@ interface Exercise {
 }
 
 interface WorkoutCardProps {
+  id?: string;
   name: string;
   category: string;
   duration: number;
@@ -24,13 +26,21 @@ interface WorkoutCardProps {
   onStart?: () => void;
 }
 
-export function WorkoutCard({ name, category, duration, calories, level, exercises, accentColor, onStart }: WorkoutCardProps) {
+export function WorkoutCard({ id, name, category, duration, calories, level, exercises, accentColor, onStart }: WorkoutCardProps) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
   const scale = useSharedValue(1);
   const color = accentColor ?? colors.purple;
 
   const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+
+  const handleStart = () => {
+    if (onStart) {
+      onStart();
+    } else if (id) {
+      router.push({ pathname: "/workout-timer", params: { id } });
+    }
+  };
 
   return (
     <Animated.View style={[animStyle, { marginBottom: 12 }]}>
@@ -82,12 +92,10 @@ export function WorkoutCard({ name, category, duration, calories, level, exercis
                 </Text>
               </View>
             ))}
-            {onStart && (
-              <Pressable onPress={onStart} style={[styles.startBtn, { backgroundColor: color }]}>
-                <Ionicons name="play" size={14} color="#FFF" />
-                <Text style={styles.startText}>Start Workout</Text>
-              </Pressable>
-            )}
+            <Pressable onPress={handleStart} style={[styles.startBtn, { backgroundColor: color }]}>
+              <Ionicons name="play" size={14} color="#FFF" />
+              <Text style={styles.startText}>Start Workout</Text>
+            </Pressable>
           </View>
         )}
       </Pressable>
