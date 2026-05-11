@@ -39,8 +39,8 @@ const MEAL_ICONS: Record<string, string> = {
 const MEAL_COLORS: Record<string, string> = {
   breakfast: "#F59E0B",
   lunch: "#10B981",
-  dinner: "#8B5CF6",
-  snack: "#06B6D4",
+  dinner: "#7C3AED",
+  snack: "#22D3EE",
 };
 
 function formatTime(timestamp: number) {
@@ -108,7 +108,7 @@ export default function NutritionScreen() {
               size={130}
               strokeWidth={12}
               progress={calorieProgress}
-              gradientColors={["#EC4899", "#8B5CF6"]}
+              gradientColors={["#EC4899", "#7C3AED"]}
             >
               <View style={{ alignItems: "center" }}>
                 <Text style={[styles.calValue, { color: colors.text }]}>{todayStats.calories}</Text>
@@ -140,8 +140,8 @@ export default function NutritionScreen() {
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Macros</Text>
         <View style={styles.macroGrid}>
           {[
-            { label: "Protein", value: todayStats.protein, goal: todayStats.proteinGoal, color: colors.purple, grad: ["#8B5CF6", "#A78BFA"] as const, unit: "g" },
-            { label: "Carbs", value: todayStats.carbs, goal: todayStats.carbsGoal, color: colors.cyan, grad: ["#06B6D4", "#38BDF8"] as const, unit: "g" },
+            { label: "Protein", value: todayStats.protein, goal: todayStats.proteinGoal, color: colors.purple, grad: ["#7C3AED", "#A78BFA"] as const, unit: "g" },
+            { label: "Carbs", value: todayStats.carbs, goal: todayStats.carbsGoal, color: colors.cyan, grad: ["#22D3EE", "#38BDF8"] as const, unit: "g" },
             { label: "Fat", value: todayStats.fat, goal: todayStats.fatGoal, color: colors.pink, grad: ["#EC4899", "#F472B6"] as const, unit: "g" },
           ].map((m) => (
             <GlassCard key={m.label} style={styles.macroCard} padding={14}>
@@ -182,7 +182,7 @@ export default function NutritionScreen() {
             {waterGlasses.map((filled, i) => (
               <Pressable key={i} onPress={addWater}>
                 <LinearGradient
-                  colors={filled ? ["#06B6D4", "#0284C7"] : [colors.muted, colors.muted]}
+                  colors={filled ? ["#22D3EE", "#0891B2"] : [colors.muted, colors.muted]}
                   style={[styles.glass, { borderColor: filled ? colors.cyan : colors.divider }]}
                 >
                   <Ionicons

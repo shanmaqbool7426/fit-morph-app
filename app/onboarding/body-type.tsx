@@ -17,7 +17,7 @@ const BODY_TYPES = [
     sub: "Naturally lean, hard to gain weight",
     traits: ["Fast metabolism", "Narrow shoulders", "Difficulty building muscle"],
     icon: "body-outline" as const,
-    colors: ["#06B6D4", "#0284C7"] as const,
+    colors: ["#22D3EE", "#0891B2"] as const,
   },
   {
     id: "mesomorph",
@@ -25,7 +25,7 @@ const BODY_TYPES = [
     sub: "Athletic build, responds well to training",
     traits: ["Gains muscle easily", "Defined physique", "Medium frame"],
     icon: "fitness-outline" as const,
-    colors: ["#8B5CF6", "#6D28D9"] as const,
+    colors: ["#7C3AED", "#5B21B6"] as const,
   },
   {
     id: "endomorph",
@@ -58,7 +58,7 @@ export default function BodyTypeScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <LinearGradient
-        colors={["#07070E", "#0D0420"]}
+        colors={["#080C18", "#0D0B28"]}
         style={StyleSheet.absoluteFill}
       />
       <View
@@ -211,6 +211,6 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingTop: 12,
-    backgroundColor: "rgba(7,7,14,0.95)",
+    backgroundColor: "rgba(8,12,24,0.97)",
   },
 });

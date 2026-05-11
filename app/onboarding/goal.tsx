@@ -19,8 +19,8 @@ import { useColors } from "@/hooks/useColors";
 
 const GOALS = [
   { id: "fat-loss", label: "Fat Loss", sub: "Burn fat, reveal your physique", icon: "flame-outline", colors: ["#EF4444", "#DC2626"] as const },
-  { id: "muscle-gain", label: "Muscle Gain", sub: "Build lean mass and strength", icon: "barbell-outline", colors: ["#8B5CF6", "#6D28D9"] as const },
-  { id: "lean-body", label: "Lean Body", sub: "Toned, fit, and defined look", icon: "body-outline", colors: ["#06B6D4", "#0284C7"] as const },
+  { id: "muscle-gain", label: "Muscle Gain", sub: "Build lean mass and strength", icon: "barbell-outline", colors: ["#7C3AED", "#5B21B6"] as const },
+  { id: "lean-body", label: "Lean Body", sub: "Toned, fit, and defined look", icon: "body-outline", colors: ["#22D3EE", "#0891B2"] as const },
   { id: "athletic", label: "Athletic Performance", sub: "Speed, power, and endurance", icon: "trophy-outline", colors: ["#F59E0B", "#D97706"] as const },
   { id: "six-pack", label: "Six-Pack Core", sub: "Sculpt a visible core", icon: "fitness-outline", colors: ["#10B981", "#059669"] as const },
 ];
@@ -46,7 +46,7 @@ export default function GoalScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <LinearGradient
-        colors={["#07070E", "#0D0420"]}
+        colors={["#080C18", "#0D0B28"]}
         style={StyleSheet.absoluteFill}
       />
       <ScrollView
@@ -202,6 +202,6 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingTop: 12,
-    backgroundColor: "rgba(7,7,14,0.95)",
+    backgroundColor: "rgba(8,12,24,0.97)",
   },
 });

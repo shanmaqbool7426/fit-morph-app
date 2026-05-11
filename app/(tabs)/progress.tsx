@@ -24,8 +24,8 @@ const CHART_HEIGHT = 100;
 
 const BADGES = [
   { icon: "flame", label: "7-Day Streak", color: "#F59E0B", unlocked: true },
-  { icon: "barbell-outline", label: "10 Workouts", color: "#8B5CF6", unlocked: true },
-  { icon: "water-outline", label: "Hydration Hero", color: "#06B6D4", unlocked: true },
+  { icon: "barbell-outline", label: "10 Workouts", color: "#7C3AED", unlocked: true },
+  { icon: "water-outline", label: "Hydration Hero", color: "#22D3EE", unlocked: true },
   { icon: "trophy-outline", label: "Goal Crusher", color: "#10B981", unlocked: false },
   { icon: "star-outline", label: "Month Master", color: "#EC4899", unlocked: false },
   { icon: "diamond-outline", label: "Elite Body", color: "#A78BFA", unlocked: false },
@@ -54,8 +54,8 @@ function WeightChart({ data }: { data: { date: string; weight: number }[] }) {
       <Svg width={CHART_WIDTH} height={CHART_HEIGHT}>
         <Defs>
           <SvgLinearGradient id="chartGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <Stop offset="0%" stopColor="#8B5CF6" stopOpacity="1" />
-            <Stop offset="100%" stopColor="#06B6D4" stopOpacity="1" />
+            <Stop offset="0%" stopColor="#7C3AED" stopOpacity="1" />
+            <Stop offset="100%" stopColor="#22D3EE" stopOpacity="1" />
           </SvgLinearGradient>
         </Defs>
         <Polyline
@@ -70,7 +70,7 @@ function WeightChart({ data }: { data: { date: string; weight: number }[] }) {
           cx={parseFloat(lastPoint[0])}
           cy={parseFloat(lastPoint[1])}
           r="5"
-          fill="#8B5CF6"
+          fill="#7C3AED"
         />
       </Svg>
       <View style={styles.chartLabels}>
@@ -146,7 +146,7 @@ export default function ProgressScreen() {
               size={100}
               strokeWidth={10}
               progress={todayStats.bodyScore / 100}
-              gradientColors={["#EC4899", "#8B5CF6"]}
+              gradientColors={["#EC4899", "#7C3AED"]}
             >
               <View style={{ alignItems: "center" }}>
                 <Text style={[styles.ringNum, { color: colors.text }]}>{todayStats.bodyScore}</Text>
@@ -201,7 +201,7 @@ export default function ProgressScreen() {
               <Text style={[styles.goalName, { color: colors.text }]}>{userProfile.goal}</Text>
               <View style={[styles.goalBar, { backgroundColor: colors.muted }]}>
                 <LinearGradient
-                  colors={["#8B5CF6", "#06B6D4"]}
+                  colors={["#7C3AED", "#22D3EE"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={[styles.goalFill, { width: "38%" }]}

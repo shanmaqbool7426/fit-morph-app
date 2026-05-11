@@ -71,7 +71,7 @@ export default function AnalyzingScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <LinearGradient colors={["#07070E", "#0D0420"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#080C18", "#0D0B28"]} style={StyleSheet.absoluteFill} />
       <LinearGradient
         colors={["rgba(139,92,246,0.15)", "transparent", "rgba(6,182,212,0.1)"]}
         style={StyleSheet.absoluteFill}
@@ -89,7 +89,7 @@ export default function AnalyzingScreen() {
         {!done ? (
           <>
             <Animated.View style={[styles.spinner, { transform: [{ rotate }] }]}>
-              <LinearGradient colors={["#8B5CF6", "#06B6D4"]} style={styles.spinnerGradient} />
+              <LinearGradient colors={["#7C3AED", "#22D3EE"]} style={styles.spinnerGradient} />
             </Animated.View>
             <Text style={[styles.title, { color: colors.text }]}>
               Analyzing{"\n"}your profile
@@ -100,7 +100,7 @@ export default function AnalyzingScreen() {
             <View style={[styles.barBg, { backgroundColor: colors.surface }]}>
               <Animated.View style={[styles.barFill, { width: barWidth }]}>
                 <LinearGradient
-                  colors={["#8B5CF6", "#06B6D4"]}
+                  colors={["#7C3AED", "#22D3EE"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={StyleSheet.absoluteFill}
@@ -150,7 +150,7 @@ export default function AnalyzingScreen() {
           </>
         ) : (
           <View style={styles.doneArea}>
-            <LinearGradient colors={["#8B5CF6", "#06B6D4"]} style={styles.doneIcon}>
+            <LinearGradient colors={["#7C3AED", "#22D3EE"]} style={styles.doneIcon}>
               <Ionicons name="checkmark" size={48} color="#FFF" />
             </LinearGradient>
             <Text style={[styles.doneTitle, { color: colors.text }]}>Your Plan is Ready!</Text>

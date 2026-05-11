@@ -23,7 +23,7 @@ const WORKOUTS = [
     duration: 45,
     calories: 320,
     level: "Intermediate",
-    accentColor: "#8B5CF6",
+    accentColor: "#7C3AED",
     exercises: [
       { name: "Push-ups", sets: 4, reps: 15 },
       { name: "Dumbbell Rows", sets: 4, reps: 12 },
@@ -84,7 +84,7 @@ const WORKOUTS = [
     duration: 20,
     calories: 80,
     level: "All Levels",
-    accentColor: "#06B6D4",
+    accentColor: "#22D3EE",
     exercises: [
       { name: "Cat-Cow Stretch", sets: 2, reps: 10 },
       { name: "Hip Flexor Stretch", sets: 2, duration: "30s" },

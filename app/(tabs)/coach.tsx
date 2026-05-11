@@ -78,7 +78,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
   return (
     <View style={[styles.msgRow, isUser && styles.msgRowUser]}>
       {!isUser && (
-        <LinearGradient colors={["#8B5CF6", "#06B6D4"]} style={styles.aiAvatar}>
+        <LinearGradient colors={["#7C3AED", "#22D3EE"]} style={styles.aiAvatar}>
           <Ionicons name="sparkles" size={14} color="#FFF" />
         </LinearGradient>
       )}
@@ -143,7 +143,7 @@ export default function CoachScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <LinearGradient
-        colors={["rgba(139,92,246,0.10)", "transparent"]}
+        colors={["rgba(124,58,237,0.18)", "transparent"]}
         style={styles.topGrad}
       />
       <KeyboardAvoidingView
@@ -161,7 +161,7 @@ export default function CoachScreen() {
             },
           ]}
         >
-          <LinearGradient colors={["#8B5CF6", "#06B6D4"]} style={styles.headerAvatar}>
+          <LinearGradient colors={["#7C3AED", "#22D3EE"]} style={styles.headerAvatar}>
             <Ionicons name="sparkles" size={20} color="#FFF" />
           </LinearGradient>
           <View>
@@ -190,7 +190,7 @@ export default function CoachScreen() {
           ListHeaderComponent={
             isTyping ? (
               <View style={styles.msgRow}>
-                <LinearGradient colors={["#8B5CF6", "#06B6D4"]} style={styles.aiAvatar}>
+                <LinearGradient colors={["#7C3AED", "#22D3EE"]} style={styles.aiAvatar}>
                   <Ionicons name="sparkles" size={14} color="#FFF" />
                 </LinearGradient>
                 <View

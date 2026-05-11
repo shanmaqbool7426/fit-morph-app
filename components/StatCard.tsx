@@ -12,18 +12,12 @@ interface StatCardProps {
   color?: string;
   style?: ViewStyle;
   gradientColors?: readonly [string, string];
+  sublabel?: string;
 }
 
-export function StatCard({
-  label,
-  value,
-  unit,
-  progress,
-  color,
-  style,
-  gradientColors,
-}: StatCardProps) {
+export function StatCard({ label, value, unit, progress, color, style, gradientColors, sublabel }: StatCardProps) {
   const colors = useColors();
+  const c = color ?? colors.purple;
 
   return (
     <View
@@ -32,32 +26,31 @@ export function StatCard({
         {
           backgroundColor: colors.surface,
           borderRadius: colors.radius,
-          borderColor: colors.divider,
+          borderColor: c + "28",
+          borderTopColor: c,
         },
         style,
       ]}
     >
-      {gradientColors && (
-        <LinearGradient
-          colors={gradientColors}
-          style={[StyleSheet.absoluteFill, { borderRadius: colors.radius, opacity: 0.12 }]}
-        />
-      )}
+      <LinearGradient
+        colors={[c + "14", "transparent"]}
+        style={[StyleSheet.absoluteFill, { borderRadius: colors.radius }]}
+      />
       <Text style={[styles.label, { color: colors.mutedForeground }]}>{label}</Text>
       <View style={styles.valueRow}>
-        <Text style={[styles.value, { color: color ?? colors.text }]}>{value}</Text>
+        <Text style={[styles.value, { color: c }]}>{value}</Text>
         {unit && <Text style={[styles.unit, { color: colors.mutedForeground }]}>{unit}</Text>}
       </View>
+      {sublabel && (
+        <Text style={[styles.sublabel, { color: colors.mutedForeground }]}>{sublabel}</Text>
+      )}
       {progress !== undefined && (
         <View style={[styles.barBg, { backgroundColor: colors.muted }]}>
           <LinearGradient
-            colors={gradientColors ?? ["#8B5CF6", "#06B6D4"]}
+            colors={gradientColors ?? [c, c + "88"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[
-              styles.barFill,
-              { width: `${Math.min(progress * 100, 100)}%` },
-            ]}
+            style={[styles.barFill, { width: `${Math.min(progress * 100, 100)}%` }]}
           />
         </View>
       )}
@@ -69,16 +62,17 @@ const styles = StyleSheet.create({
   card: {
     padding: 14,
     borderWidth: 1,
+    borderTopWidth: 2,
     overflow: "hidden",
     flex: 1,
   },
   label: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "600",
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
     textTransform: "uppercase",
     fontFamily: "Inter_600SemiBold",
-    marginBottom: 4,
+    marginBottom: 6,
   },
   valueRow: {
     flexDirection: "row",
@@ -87,15 +81,19 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: "800",
     fontFamily: "Inter_700Bold",
-    lineHeight: 28,
+    lineHeight: 26,
   },
   unit: {
-    fontSize: 12,
-    fontWeight: "500",
+    fontSize: 11,
     fontFamily: "Inter_500Medium",
-    marginBottom: 3,
+    marginBottom: 2,
+  },
+  sublabel: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    marginTop: 2,
   },
   barBg: {
     height: 3,

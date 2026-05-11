@@ -15,12 +15,13 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.purple,
+        tabBarActiveTintColor: colors.cyan,
         tabBarInactiveTintColor: colors.mutedForeground,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: isIOS ? "transparent" : colors.background,
-          borderTopWidth: 0,
+          backgroundColor: isIOS ? "transparent" : "#080C18",
+          borderTopWidth: 1,
+          borderTopColor: "rgba(99,120,255,0.18)",
           elevation: 0,
           height: isWeb ? 84 : 72,
           paddingBottom: isWeb ? 34 : 10,
@@ -28,27 +29,15 @@ export default function TabLayout() {
         },
         tabBarBackground: () =>
           isIOS ? (
-            <BlurView
-              intensity={80}
-              tint="dark"
-              style={[StyleSheet.absoluteFill, { borderTopColor: colors.divider, borderTopWidth: 1 }]}
-            />
+            <BlurView intensity={90} tint="dark" style={[StyleSheet.absoluteFill, { borderTopColor: "rgba(99,120,255,0.18)", borderTopWidth: 1 }]} />
           ) : (
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                {
-                  backgroundColor: isWeb ? colors.background : "rgba(7,7,14,0.95)",
-                  borderTopColor: colors.divider,
-                  borderTopWidth: 1,
-                },
-              ]}
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#080C18", borderTopColor: "rgba(99,120,255,0.18)", borderTopWidth: 1 }]} />
           ),
         tabBarLabelStyle: {
           fontSize: 10,
-          fontFamily: "Inter_500Medium",
+          fontFamily: "Inter_600SemiBold",
           marginTop: 2,
+          letterSpacing: 0.3,
         },
       }}
     >
@@ -57,7 +46,7 @@ export default function TabLayout() {
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "home" : "home-outline"} size={22} color={color} />
+            <Ionicons name={focused ? "grid" : "grid-outline"} size={21} color={color} />
           ),
         }}
       />
@@ -66,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: "Workout",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "barbell" : "barbell-outline"} size={22} color={color} />
+            <Ionicons name={focused ? "barbell" : "barbell-outline"} size={21} color={color} />
           ),
         }}
       />
@@ -75,12 +64,7 @@ export default function TabLayout() {
         options={{
           title: "AI Coach",
           tabBarIcon: ({ color, focused }) => (
-            <View
-              style={[
-                styles.coachIcon,
-                { backgroundColor: focused ? colors.purple : colors.surface },
-              ]}
-            >
+            <View style={[styles.coachBtn, { backgroundColor: focused ? colors.purple : colors.surface, borderColor: focused ? colors.purple : colors.divider }]}>
               <Ionicons name="sparkles" size={20} color={focused ? "#FFF" : color} />
             </View>
           ),
@@ -92,7 +76,7 @@ export default function TabLayout() {
         options={{
           title: "Nutrition",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "leaf" : "leaf-outline"} size={22} color={color} />
+            <Ionicons name={focused ? "leaf" : "leaf-outline"} size={21} color={color} />
           ),
         }}
       />
@@ -101,7 +85,7 @@ export default function TabLayout() {
         options={{
           title: "Progress",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "stats-chart" : "stats-chart-outline"} size={22} color={color} />
+            <Ionicons name={focused ? "stats-chart" : "stats-chart-outline"} size={21} color={color} />
           ),
         }}
       />
@@ -110,12 +94,13 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  coachIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+  coachBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 4,
+    borderWidth: 1.5,
   },
 });

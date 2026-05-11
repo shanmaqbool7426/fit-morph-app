@@ -12,10 +12,10 @@ import {
   Text,
   View,
 } from "react-native";
+import Svg, { Circle, Defs, LinearGradient as SvgGrad, Stop } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GlassCard } from "@/components/GlassCard";
-import { ProgressRing } from "@/components/ProgressRing";
 import { StatCard } from "@/components/StatCard";
 import { WorkoutCard } from "@/components/WorkoutCard";
 import { useApp } from "@/context/AppContext";
@@ -38,52 +38,75 @@ const TODAY_WORKOUT = {
 };
 
 const QUICK_ACTIONS = [
-  { icon: "scan-outline", label: "Body Scan", color: "#8B5CF6", route: "/onboarding/analyzing" },
-  { icon: "camera-outline", label: "Log Meal", color: "#10B981", route: "/(tabs)/nutrition" },
-  { icon: "water-outline", label: "Add Water", color: "#06B6D4", route: "/(tabs)/nutrition" },
-  { icon: "trending-up-outline", label: "Progress", color: "#EC4899", route: "/(tabs)/progress" },
+  { icon: "scan-outline" as const, label: "Body\nScan", color: "#22D3EE", route: "/onboarding/analyzing" },
+  { icon: "camera-outline" as const, label: "Log\nMeal", color: "#10B981", route: "/(tabs)/nutrition" },
+  { icon: "water-outline" as const, label: "Add\nWater", color: "#7C3AED", route: "/(tabs)/nutrition" },
+  { icon: "trending-up-outline" as const, label: "Progress", color: "#EC4899", route: "/(tabs)/progress" },
+  { icon: "barbell-outline" as const, label: "Workout", color: "#F59E0B", route: "/(tabs)/workout" },
 ];
 
 const INSIGHTS = [
   "You're 23% closer to your fat loss goal. Keep it up!",
   "Your protein intake was 14% below target yesterday — add a shake today.",
   "Great streak! 7 days in a row earns you the Fire badge.",
-  "Your body score improved by 3 points this week.",
+  "Your body score improved by 3 points this week — crushing it!",
 ];
+
+function BodyScoreRing({ score, size = 90 }: { score: number; size?: number }) {
+  const colors = useColors();
+  const strokeWidth = 8;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - score / 100);
+  const center = size / 2;
+
+  return (
+    <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
+      <Svg width={size} height={size} style={{ position: "absolute" }}>
+        <Defs>
+          <SvgGrad id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <Stop offset="0%" stopColor="#22D3EE" />
+            <Stop offset="100%" stopColor="#7C3AED" />
+          </SvgGrad>
+        </Defs>
+        <Circle cx={center} cy={center} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
+        <Circle cx={center} cy={center} r={radius} fill="none" stroke="url(#sg)" strokeWidth={strokeWidth}
+          strokeDasharray={`${circumference} ${circumference}`} strokeDashoffset={offset}
+          strokeLinecap="round" transform={`rotate(-90 ${center} ${center})`} />
+      </Svg>
+      <Text style={{ color: colors.cyan, fontSize: 22, fontWeight: "800", fontFamily: "Inter_700Bold" }}>{score}</Text>
+    </View>
+  );
+}
 
 export default function DashboardScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { userProfile, todayStats } = useApp();
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(20)).current;
+  const slideAnim = useRef(new Animated.Value(16)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.spring(slideAnim, { toValue: 0, damping: 20, useNativeDriver: true }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, damping: 22, useNativeDriver: true }),
     ]).start();
   }, []);
 
-  const calorieProgress = todayStats.calories / todayStats.caloriesGoal;
-  const proteinProgress = todayStats.protein / todayStats.proteinGoal;
-  const waterProgress = todayStats.water / todayStats.waterGoal;
-  const bodyScoreProgress = todayStats.bodyScore / 100;
   const randomInsight = INSIGHTS[Math.floor(Date.now() / 3600000) % INSIGHTS.length];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <LinearGradient
-        colors={["rgba(139,92,246,0.12)", "transparent"]}
-        style={[styles.headerGradient]}
+        colors={["rgba(124,58,237,0.15)", "transparent"]}
+        style={styles.headerGlow}
       />
       <Animated.View style={{ flex: 1, opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
         <ScrollView
           contentContainerStyle={[
             styles.scroll,
             {
-              paddingTop: insets.top + (Platform.OS === "web" ? 67 : 0) + 16,
+              paddingTop: insets.top + (Platform.OS === "web" ? 67 : 0) + 14,
               paddingBottom: insets.bottom + (Platform.OS === "web" ? 34 : 0) + 90,
             },
           ]}
@@ -92,125 +115,143 @@ export default function DashboardScreen() {
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <Text style={[styles.greeting, { color: colors.mutedForeground }]}>
-                Good morning
-              </Text>
-              <Text style={[styles.name, { color: colors.text }]}>{userProfile.name} 👋</Text>
+              <Text style={[styles.greeting, { color: colors.mutedForeground }]}>Good morning</Text>
+              <Text style={[styles.name, { color: colors.text }]}>{userProfile.name}</Text>
             </View>
             <View style={styles.headerRight}>
-              <View style={[styles.streakBadge, { backgroundColor: colors.yellow + "22" }]}>
-                <Ionicons name="flame" size={14} color={colors.yellow} />
-                <Text style={[styles.streakText, { color: colors.yellow }]}>
-                  {todayStats.streak}d
-                </Text>
+              <View style={[styles.streakBadge, { backgroundColor: "#F59E0B18", borderColor: "#F59E0B30" }]}>
+                <Ionicons name="flame" size={13} color="#F59E0B" />
+                <Text style={[styles.streakText, { color: "#F59E0B" }]}>{todayStats.streak}d streak</Text>
               </View>
-              <Pressable
-                style={[styles.avatar, { backgroundColor: colors.purple + "33", borderColor: colors.purple }]}
-                onPress={() => {}}
-              >
-                <Ionicons name="person" size={18} color={colors.purple} />
+              <Pressable style={[styles.avatar, { backgroundColor: colors.purple + "22", borderColor: colors.purple + "55" }]}>
+                <Ionicons name="person" size={17} color={colors.purple} />
               </Pressable>
             </View>
           </View>
 
-          {/* Body Score Ring */}
-          <View style={styles.scoreSection}>
-            <GlassCard style={styles.scoreCard} padding={20}>
-              <View style={styles.scoreContent}>
-                <View>
-                  <Text style={[styles.scoreLabel, { color: colors.mutedForeground }]}>BODY SCORE</Text>
-                  <Text style={[styles.scoreValue, { color: colors.text }]}>{todayStats.bodyScore}</Text>
-                  <Text style={[styles.scoreChange, { color: colors.green }]}>+3 this week</Text>
-                  <Text style={[styles.goalBadge, { color: colors.purpleLight }]}>
-                    Goal: {userProfile.goal}
-                  </Text>
+          {/* Body Scan Card */}
+          <GlassCard style={styles.bodyScanCard} padding={0} glow glowColor={colors.cyan}>
+            <LinearGradient
+              colors={["rgba(34,211,238,0.12)", "rgba(124,58,237,0.08)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={styles.bodyScanInner}>
+              <View style={styles.bodyScanLeft}>
+                <Text style={[styles.scanTag, { color: colors.mutedForeground }]}>AI BODY SCAN REPORT</Text>
+                <Text style={[styles.scanTitle, { color: colors.text }]}>Body Score</Text>
+                <BodyScoreRing score={todayStats.bodyScore} size={90} />
+                <View style={[styles.scoreTrend, { backgroundColor: colors.green + "20" }]}>
+                  <Ionicons name="trending-up" size={11} color={colors.green} />
+                  <Text style={[styles.scoreTrendText, { color: colors.green }]}>+3 this week</Text>
                 </View>
-                <ProgressRing
-                  size={110}
-                  strokeWidth={10}
-                  progress={bodyScoreProgress}
-                  gradientColors={["#8B5CF6", "#06B6D4"]}
-                >
-                  <View style={{ alignItems: "center" }}>
-                    <Text style={[styles.ringValue, { color: colors.text }]}>{todayStats.bodyScore}</Text>
-                    <Text style={[styles.ringLabel, { color: colors.mutedForeground }]}>/ 100</Text>
-                  </View>
-                </ProgressRing>
               </View>
-            </GlassCard>
-          </View>
+              <View style={styles.bodyScanRight}>
+                <Text style={[styles.scanMetaTitle, { color: colors.text }]}>{userProfile.goal}</Text>
+                <Text style={[styles.scanMetaSub, { color: colors.mutedForeground }]}>{userProfile.bodyType} · Active</Text>
+                {[
+                  { label: "Body Fat", value: "18%", color: colors.pink },
+                  { label: "Muscle Mass", value: "36 kg", color: colors.cyan },
+                  { label: "Fitness Level", value: "Inter.", color: colors.purple },
+                ].map((m) => (
+                  <View key={m.label} style={styles.miniStat}>
+                    <View style={[styles.miniDot, { backgroundColor: m.color }]} />
+                    <Text style={[styles.miniLabel, { color: colors.mutedForeground }]}>{m.label}</Text>
+                    <Text style={[styles.miniVal, { color: m.color }]}>{m.value}</Text>
+                  </View>
+                ))}
+                <Pressable
+                  onPress={() => router.push("/(tabs)/progress")}
+                  style={[styles.viewReport, { borderColor: colors.cyan + "44", backgroundColor: colors.cyan + "12" }]}
+                >
+                  <Text style={[styles.viewReportText, { color: colors.cyan }]}>View Report</Text>
+                  <Ionicons name="chevron-forward" size={12} color={colors.cyan} />
+                </Pressable>
+              </View>
+            </View>
+          </GlassCard>
 
           {/* Stats Row */}
           <View style={styles.statsRow}>
             <StatCard
               label="Calories"
               value={todayStats.calories}
-              unit={`/ ${todayStats.caloriesGoal}`}
-              progress={calorieProgress}
-              gradientColors={["#EF4444", "#EC4899"]}
-              color={colors.pink}
+              unit={`/${todayStats.caloriesGoal}`}
+              progress={todayStats.calories / todayStats.caloriesGoal}
+              gradientColors={["#EC4899", "#F43F5E"]}
+              color="#EC4899"
+              sublabel="kcal today"
             />
             <StatCard
               label="Protein"
               value={`${todayStats.protein}g`}
-              unit={`/ ${todayStats.proteinGoal}g`}
-              progress={proteinProgress}
-              gradientColors={["#8B5CF6", "#A78BFA"]}
-              color={colors.purple}
+              unit={`/${todayStats.proteinGoal}g`}
+              progress={todayStats.protein / todayStats.proteinGoal}
+              gradientColors={["#7C3AED", "#A78BFA"]}
+              color="#7C3AED"
+              sublabel="daily target"
             />
             <StatCard
               label="Water"
               value={todayStats.water}
-              unit={`/ ${todayStats.waterGoal}`}
-              progress={waterProgress}
-              gradientColors={["#06B6D4", "#0284C7"]}
-              color={colors.cyan}
+              unit={`/${todayStats.waterGoal}`}
+              progress={todayStats.water / todayStats.waterGoal}
+              gradientColors={["#22D3EE", "#38BDF8"]}
+              color="#22D3EE"
+              sublabel="glasses"
             />
           </View>
 
-          {/* AI Insight */}
-          <Pressable onPress={() => router.push("/(tabs)/coach")}>
-            <GlassCard style={styles.insightCard} padding={16}>
-              <LinearGradient
-                colors={["rgba(139,92,246,0.15)", "rgba(6,182,212,0.08)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-              <View style={styles.insightHeader}>
-                <View style={[styles.aiBadge, { backgroundColor: colors.purple + "22" }]}>
-                  <Ionicons name="sparkles" size={13} color={colors.purple} />
-                  <Text style={[styles.aiLabel, { color: colors.purple }]}>AI Insight</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={16} color={colors.mutedForeground} />
-              </View>
-              <Text style={[styles.insightText, { color: colors.text }]}>{randomInsight}</Text>
-            </GlassCard>
-          </Pressable>
-
           {/* Quick Actions */}
           <View style={styles.quickActions}>
-            {QUICK_ACTIONS.map((action, i) => (
+            {QUICK_ACTIONS.map((a, i) => (
               <Pressable
                 key={i}
-                style={[styles.qaBtn, { backgroundColor: action.color + "18", borderColor: action.color + "33" }]}
-                onPress={() => router.push(action.route as any)}
+                onPress={() => router.push(a.route as any)}
+                style={[styles.qaBtn, { backgroundColor: a.color + "14", borderColor: a.color + "30" }]}
               >
-                <Ionicons name={action.icon as any} size={20} color={action.color} />
-                <Text style={[styles.qaLabel, { color: colors.text }]}>{action.label}</Text>
+                <View style={[styles.qaIcon, { backgroundColor: a.color + "20" }]}>
+                  <Ionicons name={a.icon} size={18} color={a.color} />
+                </View>
+                <Text style={[styles.qaLabel, { color: colors.text }]}>{a.label}</Text>
               </Pressable>
             ))}
           </View>
 
+          {/* AI Insight */}
+          <Pressable onPress={() => router.push("/(tabs)/coach")}>
+            <LinearGradient
+              colors={["rgba(124,58,237,0.22)", "rgba(34,211,238,0.1)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[styles.insightCard, { borderColor: colors.purple + "40", borderRadius: colors.radius }]}
+            >
+              <View style={styles.insightHeader}>
+                <View style={[styles.aiBadge, { backgroundColor: colors.purple + "25" }]}>
+                  <Ionicons name="sparkles" size={12} color={colors.purpleLight} />
+                  <Text style={[styles.aiLabel, { color: colors.purpleLight }]}>AI Coach Insight</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={14} color={colors.mutedForeground} />
+              </View>
+              <Text style={[styles.insightText, { color: colors.text }]}>{randomInsight}</Text>
+            </LinearGradient>
+          </Pressable>
+
           {/* Today's Workout */}
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Today's Workout</Text>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Today's Workout</Text>
+            <Pressable onPress={() => router.push("/(tabs)/workout")}>
+              <Text style={[styles.seeAll, { color: colors.cyan }]}>See all</Text>
+            </Pressable>
+          </View>
           <WorkoutCard
             {...TODAY_WORKOUT}
             accentColor={colors.purple}
             onStart={() => router.push("/(tabs)/workout")}
           />
 
-          {/* Macro Summary */}
+          {/* Macro Breakdown */}
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Macros Today</Text>
           <GlassCard padding={16}>
             {[
@@ -222,15 +263,13 @@ export default function DashboardScreen() {
                 <Text style={[styles.macroLabel, { color: colors.mutedForeground }]}>{m.label}</Text>
                 <View style={[styles.macroBg, { backgroundColor: colors.muted }]}>
                   <LinearGradient
-                    colors={[m.color, m.color + "88"]}
+                    colors={[m.color, m.color + "66"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={[styles.macroFill, { width: `${Math.min((m.value / m.goal) * 100, 100)}%` }]}
                   />
                 </View>
-                <Text style={[styles.macroValue, { color: colors.text }]}>
-                  {m.value}{m.unit}
-                </Text>
+                <Text style={[styles.macroValue, { color: m.color }]}>{m.value}{m.unit}</Text>
               </View>
             ))}
           </GlassCard>
@@ -242,104 +281,62 @@ export default function DashboardScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  headerGradient: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 250,
-  },
+  headerGlow: { position: "absolute", top: 0, left: 0, right: 0, height: 220 },
   scroll: { paddingHorizontal: 16 },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  greeting: { fontSize: 13, fontFamily: "Inter_400Regular" },
-  name: { fontSize: 22, fontWeight: "700", fontFamily: "Inter_700Bold" },
-  headerRight: { flexDirection: "row", alignItems: "center", gap: 10 },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 },
+  greeting: { fontSize: 12, fontFamily: "Inter_400Regular", letterSpacing: 0.3 },
+  name: { fontSize: 22, fontWeight: "800", fontFamily: "Inter_700Bold", letterSpacing: -0.3 },
+  headerRight: { flexDirection: "row", alignItems: "center", gap: 8 },
   streakBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 20,
+    flexDirection: "row", alignItems: "center", gap: 5,
+    paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: 20, borderWidth: 1,
   },
-  streakText: { fontSize: 13, fontWeight: "700", fontFamily: "Inter_700Bold" },
+  streakText: { fontSize: 12, fontWeight: "700", fontFamily: "Inter_700Bold" },
   avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1.5,
+    width: 36, height: 36, borderRadius: 18,
+    alignItems: "center", justifyContent: "center", borderWidth: 1.5,
   },
-  scoreSection: { marginBottom: 14 },
-  scoreCard: {},
-  scoreContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  bodyScanCard: { marginBottom: 14, overflow: "hidden" },
+  bodyScanInner: { flexDirection: "row", padding: 16, gap: 16 },
+  bodyScanLeft: { alignItems: "center", gap: 6, minWidth: 100 },
+  scanTag: { fontSize: 9, fontFamily: "Inter_600SemiBold", letterSpacing: 0.8, textAlign: "center" },
+  scanTitle: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  scoreTrend: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10 },
+  scoreTrendText: { fontSize: 10, fontFamily: "Inter_600SemiBold" },
+  bodyScanRight: { flex: 1, gap: 6, justifyContent: "center" },
+  scanMetaTitle: { fontSize: 15, fontWeight: "700", fontFamily: "Inter_700Bold" },
+  scanMetaSub: { fontSize: 11, fontFamily: "Inter_400Regular", marginBottom: 4 },
+  miniStat: { flexDirection: "row", alignItems: "center", gap: 6 },
+  miniDot: { width: 6, height: 6, borderRadius: 3 },
+  miniLabel: { fontSize: 11, fontFamily: "Inter_400Regular", flex: 1 },
+  miniVal: { fontSize: 12, fontFamily: "Inter_700Bold" },
+  viewReport: {
+    flexDirection: "row", alignItems: "center", gap: 4,
+    paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: 8, borderWidth: 1,
+    alignSelf: "flex-start", marginTop: 4,
   },
-  scoreLabel: { fontSize: 10, fontWeight: "600", fontFamily: "Inter_600SemiBold", letterSpacing: 1 },
-  scoreValue: { fontSize: 42, fontWeight: "800", fontFamily: "Inter_700Bold", lineHeight: 48 },
-  scoreChange: { fontSize: 12, fontFamily: "Inter_500Medium", marginTop: 2 },
-  goalBadge: { fontSize: 12, fontFamily: "Inter_500Medium", marginTop: 4 },
-  ringValue: { fontSize: 22, fontWeight: "800", fontFamily: "Inter_700Bold" },
-  ringLabel: { fontSize: 10, fontFamily: "Inter_400Regular" },
+  viewReportText: { fontSize: 11, fontFamily: "Inter_600SemiBold" },
   statsRow: { flexDirection: "row", gap: 8, marginBottom: 14 },
-  insightCard: { marginBottom: 14, overflow: "hidden" },
-  insightHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  aiBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 20,
-  },
-  aiLabel: { fontSize: 11, fontWeight: "600", fontFamily: "Inter_600SemiBold" },
-  insightText: { fontSize: 14, fontFamily: "Inter_500Medium", lineHeight: 20 },
-  quickActions: {
-    flexDirection: "row",
-    gap: 8,
-    marginBottom: 20,
-  },
+  quickActions: { flexDirection: "row", gap: 8, marginBottom: 14 },
   qaBtn: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 14,
-    borderRadius: 14,
-    borderWidth: 1,
-    gap: 6,
+    flex: 1, alignItems: "center", paddingVertical: 10,
+    borderRadius: 12, borderWidth: 1, gap: 5,
   },
-  qaLabel: { fontSize: 10, fontFamily: "Inter_500Medium", textAlign: "center" },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: "700",
-    fontFamily: "Inter_700Bold",
-    marginBottom: 12,
-  },
-  macroRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginBottom: 12,
-  },
-  macroLabel: { width: 52, fontSize: 12, fontFamily: "Inter_500Medium" },
-  macroBg: {
-    flex: 1,
-    height: 6,
-    borderRadius: 4,
-    overflow: "hidden",
-  },
+  qaIcon: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center" },
+  qaLabel: { fontSize: 9, fontFamily: "Inter_600SemiBold", textAlign: "center", lineHeight: 13 },
+  insightCard: { padding: 14, borderWidth: 1, marginBottom: 14 },
+  insightHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 },
+  aiBadge: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
+  aiLabel: { fontSize: 11, fontWeight: "600", fontFamily: "Inter_600SemiBold" },
+  insightText: { fontSize: 13, fontFamily: "Inter_500Medium", lineHeight: 19 },
+  sectionHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", fontFamily: "Inter_700Bold", marginBottom: 10 },
+  seeAll: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
+  macroRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 12 },
+  macroLabel: { width: 48, fontSize: 11, fontFamily: "Inter_500Medium" },
+  macroBg: { flex: 1, height: 5, borderRadius: 4, overflow: "hidden" },
   macroFill: { height: "100%", borderRadius: 4 },
-  macroValue: { width: 36, fontSize: 12, fontFamily: "Inter_600SemiBold", textAlign: "right" },
+  macroValue: { width: 38, fontSize: 12, fontFamily: "Inter_700Bold", textAlign: "right" },
 });

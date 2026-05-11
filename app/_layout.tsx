@@ -18,7 +18,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppProvider } from "@/context/AppContext";
 
 SplashScreen.preventAutoHideAsync();
-SystemUI.setBackgroundColorAsync("#07070E");
+SystemUI.setBackgroundColorAsync("#080C18");
 
 const queryClient = new QueryClient();
 

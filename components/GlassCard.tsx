@@ -1,4 +1,4 @@
-import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
@@ -8,24 +8,40 @@ interface GlassCardProps {
   children: React.ReactNode;
   style?: ViewStyle;
   padding?: number;
-  blur?: number;
+  glow?: boolean;
+  glowColor?: string;
+  accent?: boolean;
 }
 
-export function GlassCard({ children, style, padding = 16, blur = 20 }: GlassCardProps) {
+export function GlassCard({ children, style, padding = 16, glow = false, glowColor, accent = false }: GlassCardProps) {
   const colors = useColors();
+  const gc = glowColor ?? colors.purple;
+
   return (
     <View
       style={[
         styles.wrapper,
         {
-          borderColor: colors.divider,
+          borderColor: glow ? gc + "44" : colors.divider,
           borderRadius: colors.radius,
-          backgroundColor: colors.cardGlass,
+          backgroundColor: colors.surface,
+          shadowColor: glow ? gc : "transparent",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: glow ? 0.5 : 0,
+          shadowRadius: glow ? 16 : 0,
+          elevation: glow ? 8 : 0,
         },
         style,
       ]}
     >
-      <BlurView intensity={blur} tint="dark" style={StyleSheet.absoluteFill} />
+      {accent && (
+        <LinearGradient
+          colors={[colors.purple + "18", colors.cyan + "08"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       <View style={{ padding }}>{children}</View>
     </View>
   );

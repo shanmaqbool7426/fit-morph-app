@@ -1,44 +1,36 @@
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Pressable, StyleSheet, Text, ViewStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
-
-import { useColors } from "@/hooks/useColors";
 
 interface GradientButtonProps {
   onPress: () => void;
   title: string;
   style?: ViewStyle;
-  variant?: "primary" | "cyan" | "pink";
+  variant?: "primary" | "cyan" | "pink" | "outline";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
 const GRADIENT_MAPS = {
-  primary: ["#8B5CF6", "#6D28D9"] as const,
-  cyan: ["#06B6D4", "#0284C7"] as const,
+  primary: ["#7C3AED", "#5B21B6"] as const,
+  cyan: ["#22D3EE", "#0891B2"] as const,
   pink: ["#EC4899", "#9333EA"] as const,
+  outline: ["transparent", "transparent"] as const,
 };
 
-export function GradientButton({
-  onPress,
-  title,
-  style,
-  variant = "primary",
-  size = "lg",
-  disabled = false,
-}: GradientButtonProps) {
-  const colors = useColors();
+export function GradientButton({ onPress, title, style, variant = "primary", size = "lg", disabled = false, icon }: GradientButtonProps) {
   const scale = useSharedValue(1);
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
-    opacity: disabled ? 0.5 : 1,
+    opacity: disabled ? 0.45 : 1,
   }));
 
-  const heights = { sm: 44, md: 52, lg: 60 };
-  const fontSizes = { sm: 14, md: 16, lg: 17 };
+  const heights = { sm: 42, md: 50, lg: 58 };
+  const fontSizes = { sm: 13, md: 15, lg: 16 };
 
   return (
     <Animated.View style={[animStyle, style]}>
@@ -49,12 +41,8 @@ export function GradientButton({
             onPress();
           }
         }}
-        onPressIn={() => {
-          scale.value = withSpring(0.97, { damping: 15 });
-        }}
-        onPressOut={() => {
-          scale.value = withSpring(1, { damping: 15 });
-        }}
+        onPressIn={() => { scale.value = withSpring(0.97, { damping: 15 }); }}
+        onPressOut={() => { scale.value = withSpring(1, { damping: 15 }); }}
         disabled={disabled}
       >
         <LinearGradient
@@ -63,9 +51,11 @@ export function GradientButton({
           end={{ x: 1, y: 0 }}
           style={[
             styles.gradient,
-            { height: heights[size], borderRadius: colors.radius },
+            { height: heights[size], borderRadius: 12 },
+            variant === "outline" && styles.outline,
           ]}
         >
+          {icon && <View>{icon}</View>}
           <Text style={[styles.text, { fontSize: fontSizes[size] }]}>{title}</Text>
         </LinearGradient>
       </Pressable>
@@ -80,10 +70,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
   },
+  outline: {
+    borderWidth: 1.5,
+    borderColor: "rgba(124,58,237,0.6)",
+  },
   text: {
     color: "#FFFFFF",
     fontWeight: "700",
-    letterSpacing: 0.3,
+    letterSpacing: 0.4,
     fontFamily: "Inter_700Bold",
   },
 });
