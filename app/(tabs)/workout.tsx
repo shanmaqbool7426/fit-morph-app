@@ -11,103 +11,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { WorkoutCard } from "@/components/WorkoutCard";
+import { WORKOUTS } from "@/constants/workouts";
 import { useColors } from "@/hooks/useColors";
 
 const FILTERS = ["All", "Strength", "HIIT", "Fat Loss", "Mobility", "Home"];
-
-const WORKOUTS = [
-  {
-    id: "1",
-    name: "Upper Body Power",
-    category: "Strength",
-    duration: 45,
-    calories: 320,
-    level: "Intermediate",
-    accentColor: "#7C3AED",
-    exercises: [
-      { name: "Push-ups", sets: 4, reps: 15 },
-      { name: "Dumbbell Rows", sets: 4, reps: 12 },
-      { name: "Shoulder Press", sets: 3, reps: 10 },
-      { name: "Bicep Curls", sets: 3, reps: 12 },
-      { name: "Tricep Dips", sets: 3, reps: 15 },
-    ],
-  },
-  {
-    id: "2",
-    name: "Fat Burn HIIT",
-    category: "HIIT",
-    duration: 30,
-    calories: 450,
-    level: "Intermediate",
-    accentColor: "#EF4444",
-    exercises: [
-      { name: "Burpees", sets: 4, duration: "40s" },
-      { name: "Jump Squats", sets: 4, duration: "40s" },
-      { name: "Mountain Climbers", sets: 4, duration: "40s" },
-      { name: "High Knees", sets: 4, duration: "40s" },
-    ],
-  },
-  {
-    id: "3",
-    name: "Lower Body Sculpt",
-    category: "Strength",
-    duration: 40,
-    calories: 280,
-    level: "Beginner",
-    accentColor: "#EC4899",
-    exercises: [
-      { name: "Squats", sets: 4, reps: 15 },
-      { name: "Lunges", sets: 3, reps: 12 },
-      { name: "Glute Bridges", sets: 4, reps: 20 },
-      { name: "Calf Raises", sets: 3, reps: 20 },
-    ],
-  },
-  {
-    id: "4",
-    name: "Core & Abs",
-    category: "Fat Loss",
-    duration: 25,
-    calories: 190,
-    level: "Beginner",
-    accentColor: "#10B981",
-    exercises: [
-      { name: "Plank", sets: 3, duration: "60s" },
-      { name: "Crunches", sets: 4, reps: 20 },
-      { name: "Leg Raises", sets: 3, reps: 15 },
-      { name: "Russian Twists", sets: 3, reps: 20 },
-    ],
-  },
-  {
-    id: "5",
-    name: "Mobility Flow",
-    category: "Mobility",
-    duration: 20,
-    calories: 80,
-    level: "All Levels",
-    accentColor: "#22D3EE",
-    exercises: [
-      { name: "Cat-Cow Stretch", sets: 2, reps: 10 },
-      { name: "Hip Flexor Stretch", sets: 2, duration: "30s" },
-      { name: "Shoulder Rolls", sets: 2, reps: 10 },
-      { name: "Pigeon Pose", sets: 2, duration: "45s" },
-    ],
-  },
-  {
-    id: "6",
-    name: "Home Full Body",
-    category: "Home",
-    duration: 35,
-    calories: 260,
-    level: "Beginner",
-    accentColor: "#F59E0B",
-    exercises: [
-      { name: "Jump Jacks", sets: 3, duration: "45s" },
-      { name: "Push-ups", sets: 3, reps: 12 },
-      { name: "Bodyweight Squats", sets: 3, reps: 15 },
-      { name: "Superman", sets: 3, reps: 12 },
-    ],
-  },
-];
 
 export default function WorkoutScreen() {
   const colors = useColors();
@@ -122,7 +29,7 @@ export default function WorkoutScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <LinearGradient
-        colors={["rgba(139,92,246,0.10)", "transparent"]}
+        colors={["rgba(124,58,237,0.15)", "transparent"]}
         style={styles.topGrad}
       />
       <ScrollView
@@ -176,8 +83,7 @@ export default function WorkoutScreen() {
         <View style={styles.weekPlan}>
           {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => {
             const today = new Date().getDay();
-            const dayMap = [0, 1, 2, 3, 4, 5, 6];
-            const isToday = dayMap[i] === today % 7;
+            const isToday = i === (today === 0 ? 6 : today - 1);
             return (
               <View
                 key={d}
